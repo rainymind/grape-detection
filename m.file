@@ -1,0 +1,25 @@
+% Read the image
+img = imread('grape.jpg');
+
+% Convert the image to grayscale if necessary
+if size(img, 3) == 3
+    img = rgb2gray(img);
+end
+
+% Convert the image to the frequency domain
+fimg = fft2(double(img));
+fimg = fftshift(fimg);
+
+% Limiting frequencies based on grape points in the image
+[r, c] = size(fimg);
+mask = zeros(r, c);
+mask(r/2-10:r/2+10, c/2-10:c/2+10) = 1;
+fimg = fimg .* mask;
+
+% Convert the image back to the spatial domain
+fimg = ifftshift(fimg);
+img2 = ifft2(fimg);
+img2 = uint8(real(img2));
+
+% Display the final image
+imshow(img2);
